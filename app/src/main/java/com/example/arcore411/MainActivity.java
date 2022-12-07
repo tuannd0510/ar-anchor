@@ -37,6 +37,8 @@ import com.example.arcore411.common.samplerender.arcore.BackgroundRenderer;
 import com.example.arcore411.common.samplerender.arcore.PlaneRenderer;
 import com.example.arcore411.common.samplerender.arcore.SpecularCubemapFilter;
 
+import com.example.arcore411.communications.Driver;
+import com.example.arcore411.communications.Utils;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.Camera;
@@ -63,10 +65,12 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity implements SampleRender.Renderer {
 
@@ -163,6 +167,21 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
         setContentView(R.layout.activity_main);
         surfaceView = findViewById(R.id.surfaceview);
         displayRotationHelper = new DisplayRotationHelper(/*context=*/ this);
+
+        Driver driver = new Driver(this);
+        AtomicBoolean clientOnline = new AtomicBoolean(false);
+
+        try {
+            driver.call();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        clientOnline.set(true);
+        Utils.toast(this, "setting up client and sending messages to remote server");
 
         // Set up touch listener.
         tapHelper = new TapHelper(/*context=*/ this);
@@ -460,6 +479,17 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
         }
         Camera camera = frame.getCamera();
 
+        DataHolder.getInstance().setCtx(camera.getPose().tx());
+        DataHolder.getInstance().setCty(camera.getPose().ty());
+        DataHolder.getInstance().setCtz(camera.getPose().tz());
+
+        DataHolder.getInstance().setCqx(camera.getPose().qx());
+        DataHolder.getInstance().setCqy(camera.getPose().qy());
+        DataHolder.getInstance().setCqz(camera.getPose().qz());
+        DataHolder.getInstance().setCqw(camera.getPose().qw());
+
+
+
         // Update BackgroundRenderer state to match the depth settings.
         try {
             backgroundRenderer.setUseDepthVisualization(
@@ -607,6 +637,16 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
                 hitResultList = frame.hitTest(tap);
             }
             for (HitResult hit : hitResultList) {
+
+                DataHolder.getInstance().setHtx(hit.getHitPose().tx());
+                DataHolder.getInstance().setHty(hit.getHitPose().ty());
+                DataHolder.getInstance().setHtz(hit.getHitPose().tz());
+
+                DataHolder.getInstance().setHqx(hit.getHitPose().qx());
+                DataHolder.getInstance().setHqy(hit.getHitPose().qy());
+                DataHolder.getInstance().setHqz(hit.getHitPose().qz());
+                DataHolder.getInstance().setHqw(hit.getHitPose().qw());
+
                 // If any plane, Oriented Point, or Instant Placement Point was hit, create an anchor.
                 Trackable trackable = hit.getTrackable();
                 // If a plane was hit, check that it was hit inside the plane polygon.
