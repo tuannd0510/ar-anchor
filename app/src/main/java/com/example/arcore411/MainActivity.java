@@ -171,8 +171,8 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
         surfaceView = findViewById(R.id.surfaceview);
         displayRotationHelper = new DisplayRotationHelper(/*context=*/ this);
 
-//        Thread TSend = new Thread(new ThreadSend());
-//        TSend.start();
+        Thread TSend = new Thread(new ThreadSend());
+        TSend.start();
 
         // Set up touch listener.
         tapHelper = new TapHelper(/*context=*/ this);
