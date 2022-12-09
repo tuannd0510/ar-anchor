@@ -3,6 +3,8 @@ package com.example.arcore411;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.media.Image;
@@ -37,8 +39,7 @@ import com.example.arcore411.common.samplerender.arcore.BackgroundRenderer;
 import com.example.arcore411.common.samplerender.arcore.PlaneRenderer;
 import com.example.arcore411.common.samplerender.arcore.SpecularCubemapFilter;
 
-import com.example.arcore411.communications.Driver;
-import com.example.arcore411.communications.Utils;
+import com.example.arcore411.communications.Client;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.Camera;
@@ -70,6 +71,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity implements SampleRender.Renderer {
@@ -161,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
     private final float[] worldLightDirection = {0.0f, 0.0f, 0.0f, 0.0f};
     private final float[] viewLightDirection = new float[4]; // view x world light direction
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,20 +171,8 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
         surfaceView = findViewById(R.id.surfaceview);
         displayRotationHelper = new DisplayRotationHelper(/*context=*/ this);
 
-        Driver driver = new Driver(this);
-        AtomicBoolean clientOnline = new AtomicBoolean(false);
-
-        try {
-            driver.call();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        clientOnline.set(true);
-        Utils.toast(this, "setting up client and sending messages to remote server");
+//        Thread TSend = new Thread(new ThreadSend());
+//        TSend.start();
 
         // Set up touch listener.
         tapHelper = new TapHelper(/*context=*/ this);
@@ -205,6 +196,12 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
                         popup.show();
                     }
                 });
+    }
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
     }
 
     /** Menu button to launch feature specific settings. */
@@ -301,6 +298,8 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
 
         surfaceView.onResume();
         displayRotationHelper.onResume();
+
+
     }
 
     @Override
@@ -315,6 +314,8 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
             session.pause();
         }
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
@@ -472,6 +473,7 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
         Frame frame;
         try {
             frame = session.update();
+
         } catch (CameraNotAvailableException e) {
             Log.e(TAG, "Camera not available during onDrawFrame", e);
             messageSnackbarHelper.showError(this, "Camera not available. Try restarting the app.");
@@ -882,5 +884,38 @@ class WrappedAnchor {
 
     public Trackable getTrackable() {
         return trackable;
+    }
+}
+
+// Thread: sending Bluetooth
+class ThreadSend implements Runnable {
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    Client m_client = null;
+    BluetoothDevice m_device = null; // todo: refactor into list
+    BluetoothAdapter m_bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+    public void run() {
+        Set<BluetoothDevice> pairedDevices = m_bluetoothAdapter.getBondedDevices();
+        if (pairedDevices.size() > 0) {
+            // todo: for now, just make sure you only have the 1 paired device
+            for (BluetoothDevice device : pairedDevices) {
+                m_device = device;
+            }
+        }
+        try {
+            if(m_device != null){
+                m_client = new Client(m_bluetoothAdapter, m_device);
+                m_client.start();
+            } else {
+                Log.e(TAG, "-- remote device not found!");
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 }

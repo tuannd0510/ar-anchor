@@ -5,9 +5,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.example.arcore411.DataHolder;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 public class Service {
 
@@ -33,15 +36,38 @@ public class Service {
         }
 
         public void run() {
-            // send pose message
-            String message = " Ohio-Senpai ";
-            byte[] buffer =  message.getBytes();
+            while (true){
+                // send pose message
+                String message =
+                        String.valueOf(DataHolder.getInstance().getCtx()) + String.valueOf(",") +
+                        String.valueOf(DataHolder.getInstance().getCty()) + String.valueOf(",") +
+                        String.valueOf(DataHolder.getInstance().getCtz());
+                System.out.println("message :"+ message);
+                byte[] buffer =  message.getBytes();
+                System.out.println("buffer: " + buffer);
 
-            try {
-                m_outputStream.write(buffer);
-            } catch (IOException e) {
-                e.printStackTrace();
+//            byte[] bytes = new byte[8];
+//            ByteBuffer.wrap(bytes).putDouble(DataHolder.getInstance().getCtx());
+//            System.out.println("byte 8: " + bytes);
+//
+//            byte [] bytes1 = ByteBuffer.allocate(8).putDouble(DataHolder.getInstance().getCtx()).array();
+//            System.out.println("bytes1 8: " + bytes1);
+
+                System.out.println(Arrays.toString(buffer));
+
+                try {
+                    m_outputStream.write(buffer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
+
         }
 
         public void closeSocket() {

@@ -18,14 +18,22 @@ public class Client extends Thread {
     private final BluetoothSocket m_socket;
     private static final String TAG = "CLIENT_DEBUG_TAG";
 
-    public Client(Handler handler, BluetoothAdapter bluetoothAdapter, BluetoothDevice device) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        m_handler = handler;
+    public Client(BluetoothAdapter bluetoothAdapter, BluetoothDevice device) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         m_bluetoothAdapter = bluetoothAdapter;
 
         int channel = 20; // channel on Linux system
         Method m = device.getClass().getMethod("createRfcommSocket",new Class[] { int.class });
         m_socket = (BluetoothSocket) m.invoke(device, channel);
     }
+
+//    public Client(Handler handler, BluetoothAdapter bluetoothAdapter, BluetoothDevice device) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+//        m_handler = handler;
+//        m_bluetoothAdapter = bluetoothAdapter;
+//
+//        int channel = 20; // channel on Linux system
+//        Method m = device.getClass().getMethod("createRfcommSocket",new Class[] { int.class });
+//        m_socket = (BluetoothSocket) m.invoke(device, channel);
+//    }
 
     public void run() {
         m_bluetoothAdapter.cancelDiscovery();
