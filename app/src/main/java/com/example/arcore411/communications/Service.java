@@ -61,8 +61,9 @@ public class Service {
                     e.printStackTrace();
                 }
 
+                // pause
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(2000); // The number of milliseconds that the program will pause.
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }

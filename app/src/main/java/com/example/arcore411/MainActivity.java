@@ -889,7 +889,8 @@ class WrappedAnchor {
 
 // Thread: sending Bluetooth
 class ThreadSend implements Runnable {
-    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final String TAG = "Thread send";
 
     Client m_client = null;
     BluetoothDevice m_device = null; // todo: refactor into list
