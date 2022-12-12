@@ -3,8 +3,6 @@ package com.example.arcore411;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.media.Image;
@@ -39,7 +37,7 @@ import com.example.arcore411.common.samplerender.arcore.BackgroundRenderer;
 import com.example.arcore411.common.samplerender.arcore.PlaneRenderer;
 import com.example.arcore411.common.samplerender.arcore.SpecularCubemapFilter;
 
-import com.example.arcore411.communications.Client;
+import com.example.arcore411.communications.BluetoothClientConnection;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.Camera;
@@ -66,13 +64,10 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity implements SampleRender.Renderer {
 
@@ -171,8 +166,8 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
         surfaceView = findViewById(R.id.surfaceview);
         displayRotationHelper = new DisplayRotationHelper(/*context=*/ this);
 
-        Thread TSend = new Thread(new ThreadSend());
-        TSend.start();
+        Thread tconn = new Thread(new BluetoothClientConnection());
+        tconn.start();
 
         // Set up touch listener.
         tapHelper = new TapHelper(/*context=*/ this);
@@ -633,8 +628,8 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
         if (tap != null && camera.getTrackingState() == TrackingState.TRACKING) {
             List<HitResult> hitResultList;
             if (instantPlacementSettings.isInstantPlacementEnabled()) {
-                hitResultList =
-                        frame.hitTestInstantPlacement(tap.getX(), tap.getY(), APPROXIMATE_DISTANCE_METERS);
+                hitResultList = frame.hitTestInstantPlacement(tap.getX(), tap.getY(), APPROXIMATE_DISTANCE_METERS);
+//                hitResultList = frame.hitTestInstantPlacement(DataHolder.getInstance().getTapX(), DataHolder.getInstance().getTapY(), APPROXIMATE_DISTANCE_METERS);
             } else {
                 hitResultList = frame.hitTest(tap);
             }
@@ -884,39 +879,5 @@ class WrappedAnchor {
 
     public Trackable getTrackable() {
         return trackable;
-    }
-}
-
-// Thread: sending Bluetooth
-class ThreadSend implements Runnable {
-
-    private static final String TAG = "Thread send";
-
-    Client m_client = null;
-    BluetoothDevice m_device = null; // todo: refactor into list
-    BluetoothAdapter m_bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-    public void run() {
-        Set<BluetoothDevice> pairedDevices = m_bluetoothAdapter.getBondedDevices();
-        if (pairedDevices.size() > 0) {
-            // todo: for now, just make sure you only have the 1 paired device
-            for (BluetoothDevice device : pairedDevices) {
-                m_device = device;
-            }
-        }
-        try {
-            if(m_device != null){
-                m_client = new Client(m_bluetoothAdapter, m_device);
-                m_client.start();
-            } else {
-                Log.e(TAG, "-- remote device not found!");
-            }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
     }
 }

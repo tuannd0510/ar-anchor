@@ -5,6 +5,8 @@ public class DataHolder {
     private double Ctx, Cty, Ctz, Cqx, Cqy, Cqz, Cqw;
     // Hit pose
     private double Htx, Hty, Htz, Hqx, Hqy, Hqz, Hqw;
+    // Hit tap
+    private float tapX, tapY;
 
     /**
      * Getter
@@ -26,6 +28,9 @@ public class DataHolder {
     public double getHqz() {return Hqz;}
     public double getHqw() {return Hqw;}
 
+    public float getTapX() {return tapX;}
+    public float getTapY() {return tapY;}
+
     /**
      * Setter
      */
@@ -46,6 +51,8 @@ public class DataHolder {
     public void setHqz(double hqz) {Hqz = hqz;}
     public void setHqw(double hqw) {Hqw = hqw;}
 
+    public void setTapX(float tapX) {this.tapX = tapX;}
+    public void setTapY(float tapY) {this.tapY = tapY;}
 
     public static final DataHolder holder = new DataHolder();
     public static DataHolder getInstance() {return holder;}
