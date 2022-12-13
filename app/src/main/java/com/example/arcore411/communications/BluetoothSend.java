@@ -40,7 +40,7 @@ public class BluetoothSend extends Thread {
 
         while (true){
             // send pose message
-            if (DataHolder.getInstance().getNewTap()){
+            if (DataHolder.getInstance().getIsNewTap()){
                 message =
                     String.valueOf("2,")+ String.valueOf(DataHolder.getInstance().getHtx()) +
                     String.valueOf(",") + String.valueOf(DataHolder.getInstance().getHty()) +

@@ -32,7 +32,7 @@ public class DataHolder {
     public float getTapX() {return tapX;}
     public float getTapY() {return tapY;}
 
-    public boolean getNewTap(){return isNewTap;}
+    public boolean getIsNewTap(){return isNewTap;}
 
     /**
      * Setter
@@ -57,7 +57,7 @@ public class DataHolder {
     public void setTapX(float tapX) {this.tapX = tapX;}
     public void setTapY(float tapY) {this.tapY = tapY;}
 
-    public void setNewTap(boolean newTap) {isNewTap = newTap;}
+    public void setIsNewTap(boolean newTap) {isNewTap = newTap;}
 
     public static final DataHolder holder = new DataHolder();
     public static DataHolder getInstance() {return holder;}

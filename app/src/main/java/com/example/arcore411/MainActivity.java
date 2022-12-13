@@ -625,8 +625,8 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
     // Handle only one tap per frame, as taps are usually low frequency compared to frame rate.
     private void handleTap(Frame frame, Camera camera) {
         MotionEvent tap = tapHelper.poll();
-        if (DataHolder.getInstance().getNewTap()){
-            DataHolder.getInstance().setNewTap(false);
+        if (DataHolder.getInstance().getIsNewTap()){
+            DataHolder.getInstance().setIsNewTap(false);
             if (tap == null && camera.getTrackingState() == TrackingState.TRACKING) {
                 List<HitResult> hitResultList;
                 if (instantPlacementSettings.isInstantPlacementEnabled()) {

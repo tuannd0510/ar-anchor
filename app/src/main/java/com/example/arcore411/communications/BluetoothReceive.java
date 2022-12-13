@@ -61,7 +61,7 @@ public class BluetoothReceive extends Thread {
 
         DataHolder.getInstance().setTapX(Float.parseFloat(str[0]));
         DataHolder.getInstance().setTapY(Float.parseFloat(str[1]));
-        DataHolder.getInstance().setNewTap(true);
+        DataHolder.getInstance().setIsNewTap(true);
 
         Log.i(TAG, "saveTap: datax "+DataHolder.getInstance().getTapX());
         Log.i(TAG, "saveTap: datay "+DataHolder.getInstance().getTapY());
