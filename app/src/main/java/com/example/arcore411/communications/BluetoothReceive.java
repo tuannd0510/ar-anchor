@@ -1,11 +1,6 @@
 package com.example.arcore411.communications;
 
-import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.content.pm.PackageManager;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
@@ -14,11 +9,8 @@ import com.example.arcore411.DataHolder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.UUID;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class BluetoothReceive extends Thread {
 
@@ -41,20 +33,39 @@ public class BluetoothReceive extends Thread {
 
     public void run() {
         byte[] buffer = new byte[1024];
-
         while (true) {
             try {
                 // read buffer and check its size
                 int bufferSize = m_inputStream.read(buffer);
-                Log.i(TAG, "receive: " + bufferSize);
-//                // validate buffer size
-//                if (bufferSize != 0) {
-//
-//                }
+                byte[] buffer1 = new byte[bufferSize];
+                for (int i=0; i<bufferSize;i++){
+                    buffer1[i] = buffer[i];
+                }
+//                Log.i(TAG, "receive: " + bufferSize);
+
+                // validate buffer size
+                if (bufferSize != 0) {
+                    saveTap(buffer1);
+                    Log.i(TAG, "run: "+ buffer1);
+                }
             } catch (IOException e) {
                 Log.e(TAG, "-- failed to read input stream!", e);
                 break;
             }
         }
     }
+
+    private void saveTap(byte[] buffer) {
+        String message = new String(buffer, StandardCharsets.UTF_8);
+        String[] str = message.split(",");
+
+        DataHolder.getInstance().setTapX(Float.parseFloat(str[0]));
+        DataHolder.getInstance().setTapY(Float.parseFloat(str[1]));
+        DataHolder.getInstance().setNewTap(true);
+
+        Log.i(TAG, "saveTap: datax "+DataHolder.getInstance().getTapX());
+        Log.i(TAG, "saveTap: datay "+DataHolder.getInstance().getTapY());
+    }
+
+
 }

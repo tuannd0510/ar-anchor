@@ -36,17 +36,21 @@ public class BluetoothSend extends Thread {
     }
 
     public void run() {
-//        message =
-//                String.valueOf("2,")+ String.valueOf(DataHolder.getInstance().getHtx()) +
-//                String.valueOf(",") + String.valueOf(DataHolder.getInstance().getHty()) +
-//                String.valueOf(",") + String.valueOf(DataHolder.getInstance().getHtz());
+
 
         while (true){
             // send pose message
-            message =
-                    String.valueOf("1,")+ String.valueOf(DataHolder.getInstance().getCtx()) +
-                    String.valueOf(",") + String.valueOf(DataHolder.getInstance().getCty()) +
-                    String.valueOf(",") + String.valueOf(DataHolder.getInstance().getCtz());
+            if (DataHolder.getInstance().getNewTap()){
+                message =
+                    String.valueOf("2,")+ String.valueOf(DataHolder.getInstance().getHtx()) +
+                    String.valueOf(",") + String.valueOf(DataHolder.getInstance().getHty()) +
+                    String.valueOf(",") + String.valueOf(DataHolder.getInstance().getHtz());
+            }else {
+                message =
+                        String.valueOf("1,")+ String.valueOf(DataHolder.getInstance().getCtx()) +
+                        String.valueOf(",") + String.valueOf(DataHolder.getInstance().getCty()) +
+                        String.valueOf(",") + String.valueOf(DataHolder.getInstance().getCtz());
+            }
             byte[] buffer =  message.getBytes();
             try {
                 m_outputStream.write(buffer);
