@@ -8,6 +8,7 @@ public class DataHolder {
     // Hit tap
     private float tapX, tapY;
     boolean isNewTap = false;
+    boolean isNewObj = false;
 
     /**
      * Getter
@@ -33,14 +34,15 @@ public class DataHolder {
     public float getTapY() {return tapY;}
 
     public boolean getIsNewTap(){return isNewTap;}
+    public boolean getIsNewObj(){return isNewObj;}
 
     /**
      * Setter
      */
     // setter Camera pose
-    public void setCtx(double ctx) {Ctx = ctx;}
-    public void setCty(double cty) {Cty = cty;}
-    public void setCtz(double ctz) {Ctz = ctz;}
+    public void setCtx(double ctx) {this.Ctx = ctx;}
+    public void setCty(double cty) {this.Cty = cty;}
+    public void setCtz(double ctz) {this.Ctz = ctz;}
     public void setCqx(double cqx) {Cqx = cqx;}
     public void setCqy(double cqy) {Cqy = cqy;}
     public void setCqz(double cqz) {Cqz = cqz;}
@@ -57,7 +59,8 @@ public class DataHolder {
     public void setTapX(float tapX) {this.tapX = tapX;}
     public void setTapY(float tapY) {this.tapY = tapY;}
 
-    public void setIsNewTap(boolean newTap) {isNewTap = newTap;}
+    public void setIsNewTap(boolean isNewTap) {this.isNewTap = isNewTap;}
+    public void setIsNewObj(boolean isNewObj) {this.isNewObj = isNewObj;}
 
     public static final DataHolder holder = new DataHolder();
     public static DataHolder getInstance() {return holder;}

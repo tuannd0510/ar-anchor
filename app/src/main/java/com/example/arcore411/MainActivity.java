@@ -649,6 +649,9 @@ public class MainActivity extends AppCompatActivity implements SampleRender.Rend
                     DataHolder.getInstance().setHqy(hit.getHitPose().qy());
                     DataHolder.getInstance().setHqz(hit.getHitPose().qz());
                     DataHolder.getInstance().setHqw(hit.getHitPose().qw());
+                    hit.getDistance();
+
+                    DataHolder.getInstance().setIsNewObj(true);
 
                     // If any plane, Oriented Point, or Instant Placement Point was hit, create an anchor.
                     Trackable trackable = hit.getTrackable();

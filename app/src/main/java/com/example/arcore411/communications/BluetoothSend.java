@@ -40,16 +40,25 @@ public class BluetoothSend extends Thread {
 
         while (true){
             // send pose message
-            if (DataHolder.getInstance().getIsNewTap()){
+            if (DataHolder.getInstance().getIsNewObj()){
+                DataHolder.getInstance().setIsNewObj(false);
                 message =
                     String.valueOf("2,")+ String.valueOf(DataHolder.getInstance().getHtx()) +
                     String.valueOf(",") + String.valueOf(DataHolder.getInstance().getHty()) +
-                    String.valueOf(",") + String.valueOf(DataHolder.getInstance().getHtz());
+                    String.valueOf(",") + String.valueOf(DataHolder.getInstance().getHtz()) +
+                            String.valueOf(",") + String.valueOf(DataHolder.getInstance().getHqx()) +
+                            String.valueOf(",") + String.valueOf(DataHolder.getInstance().getHqy()) +
+                            String.valueOf(",") + String.valueOf(DataHolder.getInstance().getHqz()) +
+                            String.valueOf(",") + String.valueOf(DataHolder.getInstance().getHqw());
             }else {
                 message =
                         String.valueOf("1,")+ String.valueOf(DataHolder.getInstance().getCtx()) +
                         String.valueOf(",") + String.valueOf(DataHolder.getInstance().getCty()) +
-                        String.valueOf(",") + String.valueOf(DataHolder.getInstance().getCtz());
+                        String.valueOf(",") + String.valueOf(DataHolder.getInstance().getCtz()) +
+                                String.valueOf(",") + String.valueOf(DataHolder.getInstance().getCqx()) +
+                                String.valueOf(",") + String.valueOf(DataHolder.getInstance().getCqy()) +
+                                String.valueOf(",") + String.valueOf(DataHolder.getInstance().getCqz()) +
+                                String.valueOf(",") + String.valueOf(DataHolder.getInstance().getCqw());
             }
             byte[] buffer =  message.getBytes();
             try {
